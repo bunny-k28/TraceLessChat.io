@@ -1,0 +1,12 @@
+body {
+  background: -webkit-linear-gradient(45deg, #4957cf, #7455ca, #bf50c1);
+}
+
+#main-container {
+  padding: 5%;
+  margin: 10%;
+}
+
+#signup-box {
+  padding: 5%;
+}
