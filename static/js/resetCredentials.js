@@ -35,7 +35,7 @@
             }
         }
 
-        if($(input).attr('type') == 'password' || $(input).attr('name') == 'reset-key') {
+        if($(input).attr('type') == 'number' || $(input).attr('name') == 'auth-key') {
             if($(input).val().trim().match(/^([0-9]+)$/) == null) {
                 return false;
             }
