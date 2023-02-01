@@ -5,7 +5,6 @@ import sqlite3
 from __init__ import *
 from werkzeug import security
 from datetime import timedelta
-from flask_qrcode import QRcode
 from flask import render_template, redirect, url_for, request, session
 
 
@@ -13,7 +12,6 @@ server = flask.Flask(__name__)
 server.secret_key = '3d9efc4wa651728'
 server.permanent_session_lifetime = timedelta(hours=6)
 
-QRcode(server)
 
 if "Chats" in os.listdir("Database"): pass
 else: os.mkdir('Database/Chats')
@@ -129,10 +127,9 @@ def emailLogin():
     user = User()
     user.email = request.form.get('email')
 
-    session['user'] = user.login_with_email()
-    if session['user'][0]:
+    if user.login_with_email():
         if user.verify_user_auth(request.form.get('auth-key')):
-            session['user'] = session['user'][-1]
+            session['user'] = user.username
             session["userStatus"] = "Online"
             return redirect(url_for('renderDashboard', 
                 username=session["user"]))

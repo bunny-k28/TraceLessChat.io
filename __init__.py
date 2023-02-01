@@ -61,8 +61,8 @@ class User:
         except Exception: pass
         finally: self.sql.close(); self.db.close();
 
-        if self.email in self.emails: return (True, self.username)
-        else: return (False,)
+        if self.email in self.emails: return True
+        else: return False
 
 
     def signup(self):
