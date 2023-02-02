@@ -1,8 +1,8 @@
 import os
 import qrcode
 import sqlite3
-from pyotp import TOTP
 
+from pyotp import TOTP
 from werkzeug import security
 
 
@@ -11,12 +11,29 @@ class User:
         self.OTP = TOTP('base32secret3232')
         self.username = username
         self.password = str()
+        self.usernames = []
         self.email = str()
 
     def filter_data(self, data_pack):
         return [data[0] for data in data_pack]
 
 
+    def get_available_users(self):
+        self.db = sqlite3.connect('Database/TLC_database.db')
+        self.sql = self.db.cursor()
+        
+        try:
+            self.sql.execute("SELECT username FROM userLogins")
+            self.usernames = self.sql.fetchall()
+        except Exception: pass
+        finally: self.sql.close(); self.db.close()
+
+        try: 
+            self.usernames = self.filter_data(self.usernames)
+            self.usernames.remove(self.username)
+        except Exception: self.usernames = []
+
+        
     def login(self):
         self.login_validity_flag = False
 
@@ -67,26 +84,19 @@ class User:
 
     def signup(self):
         self.signup_validity_flag = False
-        self.db = sqlite3.connect('Database/TLC_database.db')
-        self.sql = self.db.cursor()
-        
-        try:
-            self.sql.execute("SELECT username FROM userLogins")
-            self.usernames = self.sql.fetchall()
-        except Exception: pass
+        self._db = sqlite3.connect('Database/TLC_database.db')
+        self._sql = self._db.cursor()
 
-        try: self.usernames = self.filter_data(self.usernames)
-        except Exception: self.usernames = []
-
+        self.get_available_users()
         if self.username in self.usernames: return self.signup_validity_flag
         else:
             try:
-                self.sql.execute("""INSERT INTO userLogins(username, email, password) 
+                self._sql.execute("""INSERT INTO userLogins(username, email, password) 
                         VALUES(?, ?, ?)""", (self.username, self.email, self.password,))
-                self.db.commit()
+                self._db.commit()
                 self.signup_validity_flag = True
             except sqlite3.OperationalError: pass
-            finally: self.sql.close(); self.db.close()
+            finally: self._sql.close(); self._db.close()
 
             return self.signup_validity_flag
 

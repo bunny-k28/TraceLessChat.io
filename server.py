@@ -150,9 +150,29 @@ def logout():
 # route for dashboard
 @server.route('/dashboard/user:<username>')
 def renderDashboard(username):
+    users = User(username)
+    users.get_available_users()
+
+    session["availableUsers"] = users.usernames
     if (("user" in session) and (session["user"] is not None)):
-        return render_template('dashboard.html', username=username)
+        return render_template('dashboard.html', 
+            username=username, 
+            availableUsers=session["availableUsers"])
     else: return redirect(url_for('logout'))
+
+@server.route('/dashboard/user:<username>', methods=['POST'])
+def dashboard(username):
+    session['receiver'] = request.form.get('selectedUser')
+
+    if (("user" in session) and (session["user"] is not None)):
+        try: open(f'Database/Chats/{session["user"]}/{session["receiver"]}.txt', 'x').close()
+        except IOError: pass
+
+        return redirect(url_for('renderChatSession', 
+                                  username=session['username'], 
+                                  receiver=session['receiver']))
+
+    return redirect(url_for('logout'))
 
 
 if __name__ == '__main__':

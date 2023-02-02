@@ -1,3 +1,91 @@
-body {
-    background: linear-gradient(90deg, #29486d 25%, #32c7a0 25%);
+#availableUserList {
+    margin-left: 1.5cm;
+}
+
+
+#userSelectBtn {
+    background: -webkit-linear-gradient(45deg, #c850c0, #4158d0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#chat-box-area {
+    padding: 1cm;
+}
+
+#available-users-div {
+    background: #29486d;
+}
+
+#chat-box-area {
+    background: #32c7a0;
+}
+
+#chat-box-area .card {
+    margin-left: 30px;
+    height: 16cm;
+    width: 27cm;
+}
+
+#chat-box-area .card .card-body {
+    padding: 30px;
+}
+
+#chat-box-area .card .card-footer {
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    background-color: #29486d;
+    height: 1.5cm;
+}
+
+#msgBox {
+    width: 23.9cm;
+    border-radius: 30px;
+}
+
+#sendBtn {
+    border-radius: 30px;
+}
+
+#sendBtn:hover {
+    border-width: 2px;
+    border-color: #c850c0;
+}
+
+#sendBtnImg {
+    height: 25px;
+    width: 40px;
+}
+
+#discordJoinBtn {
+    width: 5cm;
+    background: #5865f2;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#discordJoinBtn:hover {
+    border-color: #4158d0;
+    border-radius: 30px;
+    border-width: 5px;
+}
+
+#discordJoinBtn img {
+    margin-right: 20px;
+    height: 40px;
+    width: 40px;
+}
+
+.navbar-nav-scroll {
+    height: 10.9cm;
+}
+
+.navbar-nav-scroll .btn {
+    border-radius: 30px;
+    border-color: #29486d;
+}
+
+.card {
+    border-radius: 20px;
+    border-color: #32c7a0;
 }

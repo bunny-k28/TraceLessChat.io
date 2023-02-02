@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>TLC•Login</title>
+    <title>TLC•Dashboard</title>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -40,6 +40,62 @@
         </div>
     </nav>
 
+    <div class="container-fluid row g-0">
+        <div class="col-3" id="available-users-div">
+            <h3 align="center" class="offcanvas-header mt-3" style="color: #32c7a0;">{{username}}'s Dashboard</h3>
+            <br><br><br>
+            <h4 class="mb-2"><b>Chat With:</b></h4>
+            <div class="navbar-nav-scroll">
+                {% for user in availableUsers %}
+                    <form class="align-content-center" id="availableUserList" method="post">
+                        <input type="hidden" name="selectedUser" value="{{ user }}">
+                        <button type="submit" class="btn btn-outline-dark"><h4 id="userSelectBtn">{{ user }}</h4></button>
+                    </form>
+                {% endfor %}
+            </div>
+
+            <div class="container" align="center">
+                <a class="btn btn" href="https://discord.gg/invite/rbN23Fhxa8" target="_blank" id="discordJoinBtn">
+                    <h3><img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"><b>Join Us</b></h3>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-9" id="chat-box-area">
+            <div class="card bg-dark text-light">
+                <div class="card-header">
+                    {% if receiver %}
+                        <h3 align="center" id="userSelectBtn">{{username}} -> {{receiver}}</h3>
+                    {% else %}
+                        <h3 align="center" id="userSelectBtn">{{username}} -> No User Selected</h3>
+                    {% endif %}
+                </div>
+
+                <div class="card-body">
+                    <div class="container mt-5 text-center">
+                        <br><br><br><br>
+                        <h5>No DM Selected</h5>
+                        To start a conversation select a User from the <b><i>Chat With</i></b> section
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="row g-3">
+                        <div class="col-auto">
+                            <input type="text" class="form-control bg-dark text-light" id="msgBox" 
+                            placeholder="Enter Your Message" autocomplete="off" disabled>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn" id="sendBtn" disabled>
+                                <img src="https://cdn-icons-png.flaticon.com/512/9519/9519571.png" 
+                                id="sendBtnImg" alt="send btn">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
