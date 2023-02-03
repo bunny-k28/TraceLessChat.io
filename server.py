@@ -52,8 +52,7 @@ def login():
     user.password = request.form.get('pswd')
     if user.login():
         session["userStatus"] = "Online"
-        return redirect(url_for('renderDashboard', 
-            username=session["user"]))
+        return redirect(url_for('renderDashboard'))
 
     else: 
         session['user'] = None
@@ -131,8 +130,7 @@ def emailLogin():
         if user.verify_user_auth(request.form.get('auth-key')):
             session['user'] = user.username
             session["userStatus"] = "Online"
-            return redirect(url_for('renderDashboard', 
-                username=session["user"]))
+            return redirect(url_for('renderDashboard'))
 
     else: 
         session['user'] = None
@@ -143,36 +141,66 @@ def emailLogin():
 # route for logout
 @server.route('/logout')
 def logout():
+    active_chat = ChatSession(session['user'], session['receiver'])
+    active_chat.delete_chat()
     session.clear()
     return redirect(url_for('renderLogin'))
 
 
 # route for dashboard
-@server.route('/dashboard/user:<username>')
-def renderDashboard(username):
-    users = User(username)
+@server.route('/dashboard')
+def renderDashboard():
+    users = User(session['user'])
     users.get_available_users()
 
     session["availableUsers"] = users.usernames
     if (("user" in session) and (session["user"] is not None)):
         return render_template('dashboard.html', 
-            username=username, 
+            username=session['user'], 
             availableUsers=session["availableUsers"])
     else: return redirect(url_for('logout'))
 
-@server.route('/dashboard/user:<username>', methods=['POST'])
-def dashboard(username):
+@server.route(f'/dashboard', methods=['POST'])
+def selectChatUser():
     session['receiver'] = request.form.get('selectedUser')
 
     if (("user" in session) and (session["user"] is not None)):
         try: open(f'Database/Chats/{session["user"]}/{session["receiver"]}.txt', 'x').close()
         except IOError: pass
 
+        try: open(f'Database/Chats/{session["receiver"]}/{session["user"]}.txt', 'x').close()
+        except IOError: pass
+
         return redirect(url_for('renderChatSession', 
-                                  username=session['username'], 
                                   receiver=session['receiver']))
 
     return redirect(url_for('logout'))
+
+
+# chat session route
+@server.route('/dashboard/chat-session/with=<receiver>')
+def renderChatSession(receiver):
+    if (("user" in session) and (session["user"] is not None)):
+        with open(f"Database/Chats/{session['user']}/{receiver}.txt", "r") as chatFile:
+            session['chat'] = chatFile.read()
+
+        return render_template('chatSession.html', 
+            receiver=receiver, username=session['user'], 
+            availableUsers=session["availableUsers"], theChat=session['chat'])
+
+    else: return redirect(url_for('logout'))
+
+@server.route('/dashboard/chat-session/with=<receiver>', methods=['POST'])
+def chatSession(receiver):
+    if (("user" in session) and (session["user"] is not None)):
+        new_chat = ChatSession(session['user'], receiver)
+        new_chat.save_msg(request.form.get('msg'))
+
+        return render_template('chatSession.html', 
+            availableUsers=session["availableUsers"], theChat=new_chat.display_chat(), 
+            receiver=receiver, username=session['user'])
+
+    else: return redirect(url_for('logout'))
 
 
 if __name__ == '__main__':

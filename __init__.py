@@ -3,6 +3,7 @@ import qrcode
 import sqlite3
 
 from pyotp import TOTP
+from datetime import datetime
 from werkzeug import security
 
 
@@ -115,3 +116,37 @@ class User:
 
 
     def delete_account(self):...
+
+
+class ChatSession:
+    def __init__(self, sender, receiver):
+        self.sender = sender
+        self.receiver = receiver
+
+    def save_msg(self, message):
+        self.date = datetime.now().strftime('%d/%m/%Y')
+        self.time = datetime.now().strftime('%I:%M')
+
+        try:
+            with open(f'Database/Chats/{self.sender}/{self.receiver}.txt', 'a') as senderChatFile:
+                senderChatFile.write(f"[{self.date}, {self.time}]{self.sender}: {message}\n")
+            
+            with open(f'Database/Chats/{self.receiver}/{self.sender}.txt', 'a') as receiverChatFile:
+                receiverChatFile.write(f"[{self.date}, {self.time}]{self.sender}: {message}\n")
+
+            return True
+
+        except Exception: return False
+
+
+    def display_chat(self):
+        with open(f"Database/Chats/{self.sender}/{self.receiver}.txt", "r") as chat_file:
+            self.chat = chat_file.read()
+
+        return self.chat
+
+
+    def delete_chat(self):
+        with open(f'Database/Chats/{self.sender}/{self.receiver}.txt', 'w') as senderChatFile:
+            try: senderChatFile.truncate(); self.success_flag = True;
+            except IOError: os.remove('Database/Chats/{self.sender}/{self.receiver}.txt')
