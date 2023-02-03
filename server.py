@@ -119,7 +119,7 @@ def renderEmailLogin():
     session["user"] = None
     session["userStatus"] = "Offline"
 
-    return render_template('resetCredentials.html')
+    return render_template('emailLogin.html')
 
 @server.route('/login-through-email', methods=['POST'])
 def emailLogin():
